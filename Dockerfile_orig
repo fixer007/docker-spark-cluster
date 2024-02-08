@@ -1,6 +1,5 @@
-FROM spark:3.5.0-scala2.12-java11-ubuntu as builder
+FROM openjdk:11.0.11-jre-slim-buster as builder
 
-USER root
 # Add Dependencies for PySpark
 RUN apt-get update && apt-get install -y curl vim wget software-properties-common ssh net-tools ca-certificates python3 python3-pip python3-numpy python3-matplotlib python3-scipy python3-pandas python3-simpy
 
@@ -8,10 +7,8 @@ RUN update-alternatives --install "/usr/bin/python" "python" "$(which python3)" 
 
 # Fix the value of PYTHONHASHSEED
 # Note: this is needed when you use Python 3.3 or greater
-
-# HADOOP_VERSION=3.2 \
-ENV SPARK_VERSION=3.5.0 \
-HADOOP_VERSION=3 \
+ENV SPARK_VERSION=3.0.2 \
+HADOOP_VERSION=3.2 \
 SPARK_HOME=/opt/spark \
 PYTHONHASHSEED=1
 
@@ -61,17 +58,12 @@ WORKDIR /opt/spark/jars
 
 # Download the JAR file using wget
 RUN wget -O spark-xml_2.12-0.17.0.jar https://repo1.maven.org/maven2/com/databricks/spark-xml_2.12/0.17.0/spark-xml_2.12-0.17.0.jar
-RUN wget -O spark-extension_2.12-2.11.0-3.5.jar https://repo1.maven.org/maven2/uk/co/gresearch/spark/spark-extension_2.12/2.11.0-3.5/spark-extension_2.12-2.11.0-3.5.jar
 
 WORKDIR /opt/spark
 
 # RUN cp -rf /usr/local/lib/python3.7/dist-packages/psycopg /opt/spark/python/lib/psycopg
 # RUN cp -rf /usr/local/lib/python3.7/dist-packages/psycopg_pool /opt/spark/python/lib/psycopg_pool
-# RUN cp -rf /usr/local/lib/python3.7/dist-packages/* /opt/spark/python/lib/
-
-RUN cp -rf /usr/local/lib/python3.8/dist-packages/psycopg /opt/spark/python/lib/psycopg
-RUN cp -rf /usr/local/lib/python3.8/dist-packages/psycopg_pool /opt/spark/python/lib/psycopg_pool
-RUN cp -rf /usr/local/lib/python3.8/dist-packages/* /opt/spark/python/lib/
+RUN cp -rf /usr/local/lib/python3.7/dist-packages/* /opt/spark/python/lib/
 
 COPY start-spark.sh /
 
