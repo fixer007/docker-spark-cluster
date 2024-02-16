@@ -54,6 +54,7 @@ RUN pip3 install psycopg_pool
 RUN pip3 install requests
 RUN pip3 install python-dotenv
 RUN pip3 install Elasticsearch
+RUN pip3 install pyspark-extension==2.11.0.3.5
 
 
 # The directory where the JAR will be saved
@@ -72,6 +73,12 @@ WORKDIR /opt/spark
 RUN cp -rf /usr/local/lib/python3.8/dist-packages/psycopg /opt/spark/python/lib/psycopg
 RUN cp -rf /usr/local/lib/python3.8/dist-packages/psycopg_pool /opt/spark/python/lib/psycopg_pool
 RUN cp -rf /usr/local/lib/python3.8/dist-packages/* /opt/spark/python/lib/
+
+
+RUN groupadd -g 1003 laradock
+RUN useradd laradock -u 1003 -g 1003 -m -s /bin/bash
+
+# USER laradock
 
 COPY start-spark.sh /
 
